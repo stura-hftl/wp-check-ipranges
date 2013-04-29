@@ -3,7 +3,7 @@
 /*
 Plugin Name: Check for HfTL IP Range
 Plugin URI: http://stura.hftl.de
-Description: Prüft ob die Aufrufer IP in einer Range der HfTL-Adressen liegt. Ist dies nicht der Fall löscht das Plugin den Content und zeigt eine Fehlermeldung an. Einfach [checkhftlip] in eine Seite einbinden.
+Description: Prüft ob die Aufrufer IP in einer Range der HfTL-Adressen liegt. Ist dies nicht der Fall löscht das Plugin den Content und zeigt eine Fehlermeldung an. Einfach [check-ip-ranges] in eine Seite einbinden.
 Version: 1.0
 Author: Tilmann Bach
 Author URI: http://laufwerkc.de
@@ -20,17 +20,17 @@ Author URI: http://laufwerkc.de
 
     /* Konfiguration-Ende */    
 
-    add_filter('the_content', check_for_hftl_ip, 30);
+    add_filter('the_content', check_for_ranges, 30);
 
-    function check_for_hftl_ip($content) 
+    function check_for_ranges($content) 
     {
       if(!isInAnyRange())
       {
-        return str_replace('[checkhftlip]', $errormsg , $content);
+        return $errormsg; // return error message instead of original content
       }
       else
       {
-        return str_replace('[checkhftlip]', '' , $content);
+        return str_replace('[check-ip-ranges]', '' , $content);
       }
     }
     
