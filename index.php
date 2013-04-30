@@ -19,17 +19,13 @@ Author URI: http://laufwerkc.de
 
     function check_for_ranges($content) 
     {
-    if(strstr($content, '[check-ip-ranges]') != false)
+	if(strstr($content, '[check-ip-ranges]') != false)
 	{
-		if (! isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-			$client_ip = $_SERVER['REMOTE_ADDR'];
-		}
-		else {
-			$client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-		}
+	      $client_ip = $_SERVER['REMOTE_ADDR'];
 
 	      if(!isInAnyRange($client_ip))
 	      {
+		 global $errormsg;
 	        return $errormsg; // return error message instead of original content
 	      }
 	      else
