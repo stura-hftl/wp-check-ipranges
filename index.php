@@ -11,40 +11,52 @@ Author URI: http://laufwerkc.de
 
     /* Konfiguration */
 
-    $ranges = array(
-      "195.145.74.0/24",
-      "195.145.75.0/24"
-    );
+    $ranges = array("195.145.74.0/24", "195.145.75.0/24", "212.184.75.0/24");
     
-    $errormsg = "Diese Seite darf leider nur aus dem Hochschulnetz der HfTL geöffnet werden.";
+    $errormsg = '<p>Diese Seite darf leider nur aus dem Hochschulnetz der HfTL geöffnet werden.</p>';
 
-    /* Konfiguration-Ende */    
-
-    add_filter('the_content', check_for_ranges, 30);
+    /* Konfiguration-Ende */
 
     function check_for_ranges($content) 
     {
-      if(!isInAnyRange())
-      {
-        return $errormsg; // return error message instead of original content
-      }
-      else
-      {
-        return str_replace('[check-ip-ranges]', '' , $content);
-      }
+    if(strstr($content, '[check-ip-ranges]') != false)
+	{
+		if (! isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+			$client_ip = $_SERVER['REMOTE_ADDR'];
+		}
+		else {
+			$client_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+		}
+
+	      if(!isInAnyRange($client_ip))
+	      {
+	        return $errormsg; // return error message instead of original content
+	      }
+	      else
+	      {
+	        return str_replace('[check-ip-ranges]', '' , $content);
+	      }
+	}
+	else
+	{
+		return $content;
+	}
     }
+
+    add_filter('the_content', 'check_for_ranges', 30);
     
-    function isInAnyRange()
+    function isInAnyRange($checkip)
     {
-      foreach($ranges as $range)
-      {
-        if(isInRange($range))
-          return true;
-      }
-      return false;
+	global $ranges;
+	foreach($ranges as $range)
+	{
+		if(isInRange($checkip, $range))
+			return true;
+	}
+	return false;
     }
     
-    function isInRange($range)
+    function isInRange($checkip, $range)
     {
       @list($ip, $len) = explode('/', $range);
 
