@@ -11,9 +11,7 @@ Author URI: http://laufwerkc.de
 
     /* Konfiguration */
 
-    $ranges = array("195.145.74.0/24", "195.145.75.0/24", "212.184.75.0/24");
-    
-    $errormsg = '<p>Diese Seite darf leider nur aus dem Hochschulnetz der HfTL geöffnet werden.</p>';
+    $ranges = array("192.168.0.0/24", "195.145.74.0/24", "195.145.75.0/24", "212.184.75.0/24");
 
     /* Konfiguration-Ende */
 
@@ -25,8 +23,8 @@ Author URI: http://laufwerkc.de
 
 	      if(!isInAnyRange($client_ip))
 	      {
-		 global $errormsg;
-	        return $errormsg; // return error message instead of original content
+		$var = substr($content,0,strpos($content, '[check-ip-ranges]'));
+	       	return $var; // return error message instead of original content
 	      }
 	      else
 	      {
